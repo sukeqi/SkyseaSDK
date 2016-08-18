@@ -1,24 +1,19 @@
 package com.skysea.sdk.main;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CancellationException;
 
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,20 +21,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.skysea.android.app.lib.MResource;
-import com.skysea.app.BaseActivity;
-import com.skysea.async.AutoCancelController;
-import com.skysea.async.AutoCancelServiceFramework;
-import com.skysea.async.Cancelable;
-import com.skysea.bean.CItem;
-import com.skysea.bean.OrderInfo;
-import com.skysea.exception.ResponseException;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
 import com.skysea.utils.UtilTools;
@@ -168,8 +154,8 @@ public class PaymentInfoActivity extends FragmentActivity implements
         adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
         viewpager.setAdapter(adapter);
         viewpager.addOnPageChangeListener(pageListener);
-        viewpager.setCurrentItem(1);
-        AliPay.setChecked(true);
+        viewpager.setCurrentItem(0);
+        bankCard.setChecked(true);
         initTabStrip();
         initData();
 
@@ -207,6 +193,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
      */
     int lastPosition = 0;
     public ViewPager.OnPageChangeListener pageListener = new ViewPager.OnPageChangeListener() {
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
         }
@@ -286,19 +273,17 @@ public class PaymentInfoActivity extends FragmentActivity implements
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.line);
         //屏幕宽度
         int winWidth = UtilTools.getScreenSize()[0];
-        //图片宽度
+        //图片的宽度
         int bitmapWidth = bitmap.getWidth();
         //计算出的偏移量
         int offset = (winWidth / 4 - bitmapWidth) / 2;
-
         Matrix matrix = new Matrix();
         matrix.postTranslate(offset, 0);
         checkLine.setImageMatrix(matrix);
         checkLine.setVisibility(View.VISIBLE);
-        ViewGroup.LayoutParams layoutParams = checkLine.getLayoutParams();
-        layoutParams.width = UtilTools.getScreenWidth(getApplicationContext()) / 4;
-        checkLine.setLayoutParams(layoutParams);
-
+        ViewGroup.LayoutParams lp = checkLine.getLayoutParams();
+        lp.width = UtilTools.getScreenWidth(getApplicationContext()) / 4;
+        checkLine.setLayoutParams(lp);
     }
 
 
