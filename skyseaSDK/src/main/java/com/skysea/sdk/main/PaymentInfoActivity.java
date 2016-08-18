@@ -38,9 +38,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
     TextView totalMoney;
     FragmentLayoutWithLine checkLine;
     ProgressDialog pd_pay;
-    private MainPagerAdapter adapter;
     private int[] tab_text = {R.id.tab_text1, R.id.tab_text2, R.id.tab_text3, R.id.tab_text4};
-
 
     public static String[] tabs = {"银行卡", "支付宝", "微信", "充值卡"};
     private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
@@ -64,6 +62,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
         } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             setContentView(R.layout.paymentinfos);
+            initViews();
         }
         super.onResume();
     }
@@ -117,48 +116,22 @@ public class PaymentInfoActivity extends FragmentActivity implements
             fragments.add(fragmentses);
         }
 
-        adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
-
         checkLine.setScorllToNext(true);
         checkLine.setScorll(true);
         checkLine.setWhereTab(1);
-        checkLine.setTabHeight(6, 0xfffa832d);
+        checkLine.setTabHeight(6, 0xfffa832d);//下划线的高度和颜色
         checkLine.setOnChangeFragmentListener(new FragmentLayoutWithLine.ChangeFragmentListener() {
             @Override
             public void change(int lastPosition, int position, View lastTabView, View currentTabView) {
-                ((TextView) lastTabView.findViewById(tab_text[lastPosition])).setTextColor(0xff8c8c8c);
-                ((TextView) currentTabView.findViewById(tab_text[position])).setTextColor(0xfffa832d);
-                lastTabView.setBackgroundColor(0xffffffff);
-                currentTabView.setBackgroundColor(0xffffffff);
+                ((TextView) lastTabView.findViewById(tab_text[lastPosition])).setTextColor(0xff8c8c8c);//未选中的字体颜色
+                ((TextView) currentTabView.findViewById(tab_text[position])).setTextColor(0xfffa832d);//选中的字体颜色
+                lastTabView.setBackgroundColor(0xffffffff);//未选中的背景色
+                currentTabView.setBackgroundColor(0xffffffff);//选中的背景色
 
             }
         });
         checkLine.setAdapter(fragments, R.layout.tablayout_nevideo_player, 0x0102);
-        checkLine.getViewPager().setOffscreenPageLimit(3);
-
-    }
-
-    public class MainPagerAdapter extends FragmentPagerAdapter {
-        private FragmentManager fm;
-        private ArrayList<Fragment> fragments;
-
-        public MainPagerAdapter(FragmentManager fm, ArrayList<Fragment> fragments) {
-            super(fm);
-            this.fm = fm;
-            this.fragments = fragments;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return fragments.get(position);
-        }
-
-        @Override
-        public int getCount()
-
-        {
-            return fragments.size();
-        }
+        checkLine.getViewPager().setOffscreenPageLimit(3);//设置tab数量 4个的话就设置3，比tab数量少1
 
     }
 
