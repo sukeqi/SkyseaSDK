@@ -3,12 +3,6 @@
     android:shape="rectangle"
     android:useLevel="false">
     <solid android:color="#e63019" />
-    <padding
-        android:bottom="1dp"
-        android:left="2dp"
-        android:right="2dp"
-        android:top="1dp" />
-    <solid android:color="#e63019" />
     <size
         android:width="12dp"
         android:height="12dp" />

@@ -3,33 +3,25 @@ package com.skysea.sdk.main;
 import java.util.ArrayList;
 
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.view.ViewPager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.skysea.android.app.lib.MResource;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
-import com.skysea.utils.UtilTools;
 import com.skysea.utils.Utils;
+import com.skysea.view.FragmentLayoutWithLine;
 
 public class PaymentInfoActivity extends FragmentActivity implements
         OnClickListener {
@@ -44,15 +36,11 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
     ImageView back;
     TextView totalMoney;
-    RadioGroup paymentTab;
-    RadioButton bankCard;
-    RadioButton AliPay;
-    RadioButton Wechat;
-    RadioButton rechargeCart;
-    ImageView checkLine;
-    ViewPager viewpager;
+    FragmentLayoutWithLine checkLine;
     ProgressDialog pd_pay;
     private MainPagerAdapter adapter;
+    private int[] tab_text = {R.id.tab_text1, R.id.tab_text2, R.id.tab_text3, R.id.tab_text4};
+
 
     public static String[] tabs = {"银行卡", "支付宝", "微信", "充值卡"};
     private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
@@ -61,9 +49,8 @@ public class PaymentInfoActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.paymentinfo);
+
         getIntentArgs(getIntent());
-        initViews();
 
     }
 
@@ -72,6 +59,11 @@ public class PaymentInfoActivity extends FragmentActivity implements
         // TODO Auto-generated method stub
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setContentView(R.layout.paymentinfo);
+            initViews();
+        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setContentView(R.layout.paymentinfos);
         }
         super.onResume();
     }
@@ -106,35 +98,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
     private void initViews() {
         back = (ImageView) findViewById(R.id.back);
         totalMoney = (TextView) findViewById(R.id.totalMoney);
-        paymentTab = (RadioGroup) findViewById(R.id.paymentTab);
-        bankCard = (RadioButton) findViewById(R.id.bankCard);
-        AliPay = (RadioButton) findViewById(R.id.AliPay);
-        Wechat = (RadioButton) findViewById(R.id.Wechat);
-        rechargeCart = (RadioButton) findViewById(R.id.rechargeCard);
-        checkLine = (ImageView) findViewById(R.id.checkLine);
-        viewpager = (ViewPager) findViewById(R.id.viewpager);
+        checkLine = (FragmentLayoutWithLine) findViewById(R.id.checkLine);
         back.setOnClickListener(this);
         totlesMoney = (String) totalMoney.getText();
-
-        paymentTab.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
-                switch (checkedId) {
-                    case R.id.bankCard:
-                        viewpager.setCurrentItem(0);
-                        break;
-                    case R.id.AliPay:
-                        viewpager.setCurrentItem(1);
-                        break;
-                    case R.id.Wechat:
-                        viewpager.setCurrentItem(2);
-                        break;
-                    case R.id.rechargeCard:
-                        viewpager.setCurrentItem(3);
-                        break;
-                }
-            }
-        });
         for (int i = 0; i < tabs.length; i++) {
             Bundle data = new Bundle();
             data.putString("text", tabs[i]);
@@ -152,17 +118,24 @@ public class PaymentInfoActivity extends FragmentActivity implements
         }
 
         adapter = new MainPagerAdapter(getSupportFragmentManager(), fragments);
-        viewpager.setAdapter(adapter);
-        viewpager.addOnPageChangeListener(pageListener);
-        viewpager.setCurrentItem(0);
-        bankCard.setChecked(true);
-        initTabStrip();
-        initData();
 
-    }
+        checkLine.setScorllToNext(true);
+        checkLine.setScorll(true);
+        checkLine.setWhereTab(1);
+        checkLine.setTabHeight(6, 0xfffa832d);
+        checkLine.setOnChangeFragmentListener(new FragmentLayoutWithLine.ChangeFragmentListener() {
+            @Override
+            public void change(int lastPosition, int position, View lastTabView, View currentTabView) {
+                ((TextView) lastTabView.findViewById(tab_text[lastPosition])).setTextColor(0xff8c8c8c);
+                ((TextView) currentTabView.findViewById(tab_text[position])).setTextColor(0xfffa832d);
+                lastTabView.setBackgroundColor(0xffffffff);
+                currentTabView.setBackgroundColor(0xffffffff);
 
-    private void initData() {
-        //请求接口数据,请求成功之后调用以下方法
+            }
+        });
+        checkLine.setAdapter(fragments, R.layout.tablayout_nevideo_player, 0x0102);
+        checkLine.getViewPager().setOffscreenPageLimit(3);
+
     }
 
     public class MainPagerAdapter extends FragmentPagerAdapter {
@@ -181,62 +154,13 @@ public class PaymentInfoActivity extends FragmentActivity implements
         }
 
         @Override
-        public int getCount() {
+        public int getCount()
+
+        {
             return fragments.size();
         }
 
     }
-
-
-    /**
-     * 切换监听
-     */
-    int lastPosition = 0;
-    public ViewPager.OnPageChangeListener pageListener = new ViewPager.OnPageChangeListener() {
-
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        }
-
-        @Override
-        public void onPageSelected(int position) {
-            selectTab(position);
-            TranslateAnimation animation = new TranslateAnimation(lastPosition * (UtilTools.getScreenSize()[0] / 4),
-                    position * (UtilTools.getScreenSize()[0] / 4), 0, 0);
-            animation.setFillAfter(true);
-            animation.setDuration(300);
-            checkLine.startAnimation(animation);
-            lastPosition = position;
-        }
-
-        @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
-    };
-
-    /**
-     * 选择对应的tab页
-     *
-     * @param position
-     */
-    private void selectTab(int position) {
-        switch (position) {
-            case 0:
-                bankCard.setChecked(true);
-                break;
-            case 1:
-                AliPay.setChecked(true);
-                break;
-            case 2:
-                Wechat.setChecked(true);
-                break;
-            case 3:
-                rechargeCart.setChecked(true);
-                break;
-        }
-    }
-
 
     @Override
     protected void onDestroy() {
@@ -249,6 +173,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
         switch (v.getId()) {
             case R.id.back:
                 finish();
+                anim();
                 break;
         }
     }
@@ -268,23 +193,5 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 MResource.getIdByName(PaymentInfoActivity.this, "anim",
                         "page_left_alpha"));
     }
-
-    private void initTabStrip() {
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.line);
-        //屏幕宽度
-        int winWidth = UtilTools.getScreenSize()[0];
-        //图片的宽度
-        int bitmapWidth = bitmap.getWidth();
-        //计算出的偏移量
-        int offset = (winWidth / 4 - bitmapWidth) / 2;
-        Matrix matrix = new Matrix();
-        matrix.postTranslate(offset, 0);
-        checkLine.setImageMatrix(matrix);
-        checkLine.setVisibility(View.VISIBLE);
-        ViewGroup.LayoutParams lp = checkLine.getLayoutParams();
-        lp.width = UtilTools.getScreenWidth(getApplicationContext()) / 4;
-        checkLine.setLayoutParams(lp);
-    }
-
 
 }

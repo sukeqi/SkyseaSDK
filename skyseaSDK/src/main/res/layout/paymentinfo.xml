@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="360安全支付"
+            android:text="ya247安全支付"
             android:textColor="#ffffff"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -69,95 +69,9 @@
         android:layout_height="10dp"
         android:background="#f4f4f4" />
 
-    <RadioGroup
-        android:id="@+id/paymentTab"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ffffff"
-        android:orientation="horizontal">
-
-
-        <RadioButton
-            android:id="@+id/bankCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="银行卡"
-            android:textColor="@color/color_radiobuton" />
-
-
-        <View
-            android:layout_width="0.1dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center_vertical"
-            android:background="#aaaaaa" />
-
-        <RadioButton
-            android:id="@+id/AliPay"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:checked="true"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="支付宝"
-            android:textColor="@color/color_radiobuton" />
-
-        <View
-            android:layout_width="0.1dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center_vertical"
-            android:background="#aaaaaa" />
-
-        <RadioButton
-            android:id="@+id/Wechat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="微信"
-            android:textColor="@color/color_radiobuton" />
-
-        <View
-            android:layout_width="0.1dp"
-            android:layout_height="14dp"
-            android:layout_gravity="center_vertical"
-            android:background="#aaaaaa" />
-
-        <RadioButton
-            android:id="@+id/rechargeCard"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:gravity="center_horizontal"
-            android:paddingBottom="10dp"
-            android:paddingTop="10dp"
-            android:text="充值卡"
-            android:textColor="@color/color_radiobuton" />
-
-    </RadioGroup>
-
-    <ImageView
+    <com.skysea.view.FragmentLayoutWithLine
         android:id="@+id/checkLine"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:scaleType="matrix"
-        android:src="@drawable/line"
-        android:visibility="visible" />
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"></com.skysea.view.FragmentLayoutWithLine>
 
 </LinearLayout>
