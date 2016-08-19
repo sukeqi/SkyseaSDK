@@ -1,6 +1,7 @@
 package com.skysea.sdk.main;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -14,14 +15,20 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.skysea.android.app.lib.MResource;
+import com.skysea.bean.Item;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
 import com.skysea.utils.Utils;
 import com.skysea.view.FragmentLayoutWithLine;
+import com.skysea.view.ViewHolder;
 
 public class PaymentInfoActivity extends FragmentActivity implements
         OnClickListener {
@@ -38,6 +45,12 @@ public class PaymentInfoActivity extends FragmentActivity implements
     TextView totalMoney;
     FragmentLayoutWithLine checkLine;
     ProgressDialog pd_pay;
+
+    ListView listTab;
+    List<Item> datas = new ArrayList<Item>();
+    TextView totalMoneys;
+    TextView payWay;
+    Button paywaybtn;
     private int[] tab_text = {R.id.tab_text1, R.id.tab_text2, R.id.tab_text3, R.id.tab_text4};
 
     public static String[] tabs = {"银行卡", "支付宝", "微信", "充值卡"};
@@ -56,15 +69,71 @@ public class PaymentInfoActivity extends FragmentActivity implements
     protected void onResume() {
         // TODO Auto-generated method stub
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setContentView(R.layout.paymentinfos);
+            initView();
+        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             setContentView(R.layout.paymentinfo);
             initViews();
-        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setContentView(R.layout.paymentinfos);
-            initViews();
         }
         super.onResume();
+    }
+
+    private void initView() {
+        listTab = (ListView) findViewById(R.id.tab_list);
+        totalMoneys = (TextView) findViewById(R.id.totalMoney);
+        payWay = (TextView) findViewById(R.id.payway);
+        paywaybtn = (Button) findViewById(R.id.paywaybtn);
+        datas.add(new Item("银行卡"));
+        datas.add(new Item("支付宝"));
+        datas.add(new Item("微信"));
+        datas.add(new Item("充值卡"));
+        datas.get(0).isSelect = true;
+        payWay.setText("确认无误后去" + datas.get(0).name + "付款");
+        paywaybtn.setText("去" + datas.get(0).name + "付款");
+        final BaseAdapter adapter = new CommonAdapter<Item>(this, datas, R.layout.list_tab) {
+            @Override
+            public void convert(ViewHolder holder, Item item, int position) {
+                holder.setText(R.id.text, item.name);
+                if (item.isSelect) {
+                    ((TextView) holder.getView(R.id.text)).setTextColor(0xfffa832d);
+                    ((TextView) holder.getView(R.id.text)).setBackgroundColor(0xfff2f2f2);
+                } else {
+                    ((TextView) holder.getView(R.id.text)).setTextColor(0xff8c8c8c);
+                    ((TextView) holder.getView(R.id.text)).setBackgroundColor(0xfff2f2f2);
+                }
+            }
+        };
+        listTab.setAdapter(adapter);
+        listTab.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                for (int i = 0; i < datas.size(); i++) {
+                    if (i == position) {
+                        datas.get(i).isSelect = true;
+                    } else {
+                        datas.get(i).isSelect = false;
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                totalMoneys.setText(totalMoneys.getText());
+
+                if (datas.get(0).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(0).name + "付款");
+                    paywaybtn.setText("去" + datas.get(0).name + "付款");
+                } else if (datas.get(1).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(1).name + "付款");
+                    paywaybtn.setText("去" + datas.get(1).name + "付款");
+                } else if (datas.get(2).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(2).name + "付款");
+                    paywaybtn.setText("去" + datas.get(2).name + "付款");
+                } else if (datas.get(3).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(3).name + "付款");
+                    paywaybtn.setText("去" + datas.get(3).name + "付款");
+                }
+            }
+        });
     }
 
     private void getIntentArgs(Intent intent) {
@@ -99,7 +168,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
         totalMoney = (TextView) findViewById(R.id.totalMoney);
         checkLine = (FragmentLayoutWithLine) findViewById(R.id.checkLine);
         back.setOnClickListener(this);
-        totlesMoney = (String) totalMoney.getText();
         for (int i = 0; i < tabs.length; i++) {
             Bundle data = new Bundle();
             data.putString("text", tabs[i]);

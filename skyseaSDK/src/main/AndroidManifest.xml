@@ -34,7 +34,9 @@
             android:configChanges="orientation|keyboardHidden|navigation">
         </activity>
         <activity 
-            android:name="com.skysea.sdk.main.PaymentInfoActivity">
+            android:name="com.skysea.sdk.main.PaymentInfoActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            >
         </activity>
         <activity 
             android:name="com.skysea.sdk.main.OrderInfoActivity"></activity>

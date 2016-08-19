@@ -1,41 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/title_ll"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/text"
     android:layout_width="match_parent"
-    android:layout_height="45dp"
-    android:background="#f2f2f2"
-    android:clickable="false"
-    android:focusable="false"
-    android:focusableInTouchMode="false"
+    android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="horizontal">
+    android:paddingBottom="25dp"
+    android:paddingTop="25dp"
+    android:textSize="15sp">
 
-    <View
-        android:background="#fb6807"
-        android:id="@+id/indicator"
-        android:layout_width="1.5dp"
-        android:layout_height="40dp"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="2dp"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false" />
-
-    <TextView
-        android:id="@+id/title_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:clickable="false"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:textColor="#717171"
-        android:gravity="center"
-        android:text="优选水果" />
-
-    <CheckBox
-        android:id="@+id/checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-</RelativeLayout>
+</TextView>
