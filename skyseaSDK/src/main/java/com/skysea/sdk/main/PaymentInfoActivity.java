@@ -1,9 +1,12 @@
 package com.skysea.sdk.main;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CancellationException;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -21,9 +24,16 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.skysea.android.app.lib.MResource;
+import com.skysea.app.BaseActivity;
+import com.skysea.async.AutoCancelController;
+import com.skysea.async.AutoCancelServiceFramework;
+import com.skysea.async.Cancelable;
 import com.skysea.bean.Item;
+import com.skysea.bean.OrderInfo;
+import com.skysea.exception.ResponseException;
 import com.skysea.interfaces.IDispatcherCallback;
 import com.skysea.sdk.R;
 import com.skysea.utils.Utils;
@@ -51,7 +61,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
     TextView totalMoneys;
     TextView payWay;
     Button paywaybtn;
+    String text;
     private int[] tab_text = {R.id.tab_text1, R.id.tab_text2, R.id.tab_text3, R.id.tab_text4};
+    private AutoCancelController mAutoCancelController = new AutoCancelController();
 
     public static String[] tabs = {"银行卡", "支付宝", "微信", "充值卡"};
     private ArrayList<Fragment> fragments = new ArrayList<Fragment>();
@@ -85,11 +97,15 @@ public class PaymentInfoActivity extends FragmentActivity implements
         totalMoneys = (TextView) findViewById(R.id.totalMoney);
         payWay = (TextView) findViewById(R.id.payway);
         paywaybtn = (Button) findViewById(R.id.paywaybtn);
+        back = (ImageView) findViewById(R.id.back);
         datas.add(new Item("银行卡"));
         datas.add(new Item("支付宝"));
         datas.add(new Item("微信"));
         datas.add(new Item("充值卡"));
         datas.get(0).isSelect = true;
+
+        back.setOnClickListener(this);
+        paywaybtn.setOnClickListener(this);
         payWay.setText("确认无误后去" + datas.get(0).name + "付款");
         paywaybtn.setText("去" + datas.get(0).name + "付款");
         final BaseAdapter adapter = new CommonAdapter<Item>(this, datas, R.layout.list_tab) {
@@ -98,7 +114,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 holder.setText(R.id.text, item.name);
                 if (item.isSelect) {
                     ((TextView) holder.getView(R.id.text)).setTextColor(0xfffa832d);
-                    ((TextView) holder.getView(R.id.text)).setBackgroundColor(0xfff2f2f2);
+                    ((TextView) holder.getView(R.id.text)).setBackgroundResource(R.drawable.line_ver);
                 } else {
                     ((TextView) holder.getView(R.id.text)).setTextColor(0xff8c8c8c);
                     ((TextView) holder.getView(R.id.text)).setBackgroundColor(0xfff2f2f2);
@@ -109,6 +125,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
         listTab.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                text = datas.get(position).name;
                 for (int i = 0; i < datas.size(); i++) {
                     if (i == position) {
                         datas.get(i).isSelect = true;
@@ -118,7 +135,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 }
                 adapter.notifyDataSetChanged();
                 totalMoneys.setText(totalMoneys.getText());
-
                 if (datas.get(0).isSelect) {
                     payWay.setText("确认无误后去" + datas.get(0).name + "付款");
                     paywaybtn.setText("去" + datas.get(0).name + "付款");
@@ -216,6 +232,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 finish();
                 anim();
                 break;
+            case R.id.paywaybtn:
+                checkOrderInfo();
+                break;
         }
     }
 
@@ -233,6 +252,111 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 PaymentInfoActivity.this, "anim", "page_from_alpha"),
                 MResource.getIdByName(PaymentInfoActivity.this, "anim",
                         "page_left_alpha"));
+    }
+
+    public void checkOrderInfo() {
+        OrderInfo r = new OrderInfo();
+        r.setUserid(userid);
+        r.setGameid(gameid);
+        r.setGameserverid(gameserverid);
+        r.setXb_orderid(xb_orderid);
+        r.setPayment_mode(text);
+
+        if (!totalMoneys.getText().equals("0")) {
+            r.setAmount(totalMoneys.getText().toString());
+            handlerOrder(r);
+        } else {
+            Toast.makeText(
+                    PaymentInfoActivity.this,
+                    getString(MResource.getIdByName(PaymentInfoActivity.this,
+                            "string", "modeofpayment_check")),
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void autoCancel(Cancelable task) {
+        mAutoCancelController.add(task);
+    }
+
+    private void handlerOrder(OrderInfo info) {
+        autoCancel(new AutoCancelServiceFramework<OrderInfo, Void, String>(mAutoCancelController) {
+
+            @Override
+            protected void onPreExecute() {
+                // TODO Auto-generated method stub
+                pd_pay = Utils.show(PaymentInfoActivity.this, MResource
+                        .getIdByName(PaymentInfoActivity.this
+                                        .getApplicationContext(), "string",
+                                "modeofpayment_tips"), MResource.getIdByName(
+                        PaymentInfoActivity.this.getApplicationContext(),
+                        "string", "modeofpayment_loading_orderinfo"));
+            }
+
+            @Override
+            protected String doInBackground(OrderInfo... params) {
+                // TODO Auto-generated method stub
+                createIPlatCokeService();
+                try {
+                    return mIPlatService.toOrder(params[0]);
+                } catch (CancellationException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (ResponseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                // TODO Auto-generated method stub
+                Utils.dismiss(pd_pay);
+                if (result != null) {
+                    String resultData[] = handlerResult(result);
+                    // Message&Status&ordernum&GameName&ServerName&Username
+
+                    if (resultData[1].equals("1")) {
+                        String ordernum = resultData[2];
+                        String gamename = resultData[3];
+                        String servername = resultData[4];
+                        String username = resultData[5];
+
+                        Bundle bundle = new Bundle();
+                        bundle.putString("ordernum", ordernum);
+                        bundle.putString("gamename", gamename);
+                        bundle.putString("servername", servername);
+                        bundle.putString("username", username);
+                        bundle.putString("amount", totalMoneys.getText().toString());
+                        goToforResult(PaymentInfoActivity.this,
+                                OrderInfoActivity.class, bundle, 0);
+                    }
+                }
+            }
+
+        }.execute(info));
+    }
+
+    protected void goToforResult(Context form, Class<? extends BaseActivity> to, Bundle data, int requestCode) {
+        Intent intent = new Intent();
+        intent.setClass(form, to);
+        if (data != null) {
+            intent.putExtras(data);
+        }
+        startActivityForResult(intent, requestCode);
+    }
+
+    private String[] handlerResult(String result) {
+
+        // Message&Status&ordernum&GameName&ServerName&Username
+        String[] resultString = result.split("&");
+        return resultString;
     }
 
 }
