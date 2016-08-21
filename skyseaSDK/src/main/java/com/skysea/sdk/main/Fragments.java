@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.skysea.alipay.AlixPay;
 import com.skysea.android.app.lib.MResource;
 import com.skysea.app.BaseActivity;
 import com.skysea.async.AutoCancelController;
@@ -77,19 +78,7 @@ public class Fragments extends Fragment implements View.OnClickListener {
         totlesMoney = bundle.getString("totlesMoney");
 
         xb_orderid = bundle.getString("xb_orderid");
-        if (text.equals(PaymentInfoActivity.tabs[0])) {
-            confirmpay.setText("确认无误后去" + text + "支付");
-            gotopay.setText("去" + text + "支付");
-        } else if (text.equals(PaymentInfoActivity.tabs[1])) {
-            confirmpay.setText("确认无误后去" + text + "支付");
-            gotopay.setText("去" + text + "支付");
-        } else if (text.equals(PaymentInfoActivity.tabs[2])) {
-            confirmpay.setText("确认无误后去" + text + "支付");
-            gotopay.setText("去" + text + "支付");
-        } else if (text.equals(PaymentInfoActivity.tabs[3])) {
-            confirmpay.setText("确认无误后去" + text + "支付");
-            gotopay.setText("去" + text + "支付");
-        }
+
         return view;
     }
 
@@ -110,6 +99,21 @@ public class Fragments extends Fragment implements View.OnClickListener {
                     getString(MResource.getIdByName(getActivity(),
                             "string", "modeofpayment_check")),
                     Toast.LENGTH_SHORT).show();
+        }
+        if (text.equals(PaymentInfoActivity.tabs[0])) {
+            confirmpay.setText("确认无误后去" + text + "支付");
+            gotopay.setText("去" + text + "支付");
+        } else if (text.equals(PaymentInfoActivity.tabs[1])) {
+            confirmpay.setText("确认无误后去" + text + "支付");
+            gotopay.setText("去" + text + "支付");
+            AlixPay alixPay = new AlixPay(getActivity(), r);
+            alixPay.pay();
+        } else if (text.equals(PaymentInfoActivity.tabs[2])) {
+            confirmpay.setText("确认无误后去" + text + "支付");
+            gotopay.setText("去" + text + "支付");
+        } else if (text.equals(PaymentInfoActivity.tabs[3])) {
+            confirmpay.setText("确认无误后去" + text + "支付");
+            gotopay.setText("去" + text + "支付");
         }
     }
 

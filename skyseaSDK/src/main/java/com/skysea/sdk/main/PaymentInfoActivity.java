@@ -26,6 +26,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.skysea.alipay.AlixPay;
 import com.skysea.android.app.lib.MResource;
 import com.skysea.app.BaseActivity;
 import com.skysea.async.AutoCancelController;
@@ -81,13 +82,13 @@ public class PaymentInfoActivity extends FragmentActivity implements
     protected void onResume() {
         // TODO Auto-generated method stub
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setContentView(R.layout.paymentinfos);
-            initView();
-        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             setContentView(R.layout.paymentinfo);
             initViews();
+        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setContentView(R.layout.paymentinfos);
+            initView();
         }
         super.onResume();
     }
@@ -135,19 +136,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 }
                 adapter.notifyDataSetChanged();
                 totalMoneys.setText(totalMoneys.getText());
-                if (datas.get(0).isSelect) {
-                    payWay.setText("确认无误后去" + datas.get(0).name + "付款");
-                    paywaybtn.setText("去" + datas.get(0).name + "付款");
-                } else if (datas.get(1).isSelect) {
-                    payWay.setText("确认无误后去" + datas.get(1).name + "付款");
-                    paywaybtn.setText("去" + datas.get(1).name + "付款");
-                } else if (datas.get(2).isSelect) {
-                    payWay.setText("确认无误后去" + datas.get(2).name + "付款");
-                    paywaybtn.setText("去" + datas.get(2).name + "付款");
-                } else if (datas.get(3).isSelect) {
-                    payWay.setText("确认无误后去" + datas.get(3).name + "付款");
-                    paywaybtn.setText("去" + datas.get(3).name + "付款");
-                }
             }
         });
     }
@@ -184,6 +172,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
         totalMoney = (TextView) findViewById(R.id.totalMoney);
         checkLine = (FragmentLayoutWithLine) findViewById(R.id.checkLine);
         back.setOnClickListener(this);
+        fragments.clear();
         for (int i = 0; i < tabs.length; i++) {
             Bundle data = new Bundle();
             data.putString("text", tabs[i]);
@@ -191,7 +180,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
             data.putString("gameid", gameid);
             data.putString("gameserverid", gameserverid);
             data.putString("xb_orderid", xb_orderid);
-            data.putString("totlesMoney", totlesMoney);
+            data.putString("totlesMoney", totalMoney.getText().toString());
             if (isFinishing()) {
                 return;
             }
@@ -199,7 +188,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
             fragmentses.setArguments(data);
             fragments.add(fragmentses);
         }
-
         checkLine.setScorllToNext(true);
         checkLine.setScorll(true);
         checkLine.setWhereTab(1);
@@ -272,6 +260,21 @@ public class PaymentInfoActivity extends FragmentActivity implements
                             "string", "modeofpayment_check")),
                     Toast.LENGTH_SHORT).show();
         }
+        if (datas.get(0).isSelect) {
+            payWay.setText("确认无误后去" + datas.get(0).name + "付款");
+            paywaybtn.setText("去" + datas.get(0).name + "付款");
+        } else if (datas.get(1).isSelect) {
+            payWay.setText("确认无误后去" + datas.get(1).name + "付款");
+            paywaybtn.setText("去" + datas.get(1).name + "付款");
+            AlixPay alixPay = new AlixPay(PaymentInfoActivity.this, r);
+            alixPay.pay();
+        } else if (datas.get(2).isSelect) {
+            payWay.setText("确认无误后去" + datas.get(2).name + "付款");
+            paywaybtn.setText("去" + datas.get(2).name + "付款");
+        } else if (datas.get(3).isSelect) {
+            payWay.setText("确认无误后去" + datas.get(3).name + "付款");
+            paywaybtn.setText("去" + datas.get(3).name + "付款");
+        }
     }
 
     public void autoCancel(Cancelable task) {
@@ -320,7 +323,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 Utils.dismiss(pd_pay);
                 if (result != null) {
                     String resultData[] = handlerResult(result);
-                    // Message&Status&ordernum&GameName&ServerName&Username
+                     // Message&Status&ordernum&GameName&ServerName&Username
 
                     if (resultData[1].equals("1")) {
                         String ordernum = resultData[2];
