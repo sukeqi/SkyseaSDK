@@ -82,13 +82,13 @@ public class PaymentInfoActivity extends FragmentActivity implements
     protected void onResume() {
         // TODO Auto-generated method stub
         if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            setContentView(R.layout.paymentinfo);
-            initViews();
-        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             setContentView(R.layout.paymentinfos);
             initView();
+        } else if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            setContentView(R.layout.paymentinfo);
+            initViews();
         }
         super.onResume();
     }
@@ -107,8 +107,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
         back.setOnClickListener(this);
         paywaybtn.setOnClickListener(this);
-        payWay.setText("确认无误后去" + datas.get(0).name + "付款");
-        paywaybtn.setText("去" + datas.get(0).name + "付款");
         final BaseAdapter adapter = new CommonAdapter<Item>(this, datas, R.layout.list_tab) {
             @Override
             public void convert(ViewHolder holder, Item item, int position) {
@@ -123,6 +121,8 @@ public class PaymentInfoActivity extends FragmentActivity implements
             }
         };
         listTab.setAdapter(adapter);
+        payWay.setText("确认无误后去" + datas.get(0).name + "付款");
+        paywaybtn.setText("去" + datas.get(0).name + "付款");
         listTab.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -136,6 +136,19 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 }
                 adapter.notifyDataSetChanged();
                 totalMoneys.setText(totalMoneys.getText());
+                if (datas.get(0).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(0).name + "付款");
+                    paywaybtn.setText("去" + datas.get(0).name + "付款");
+                } else if (datas.get(1).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(1).name + "付款");
+                    paywaybtn.setText("去" + datas.get(1).name + "付款");
+                } else if (datas.get(2).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(2).name + "付款");
+                    paywaybtn.setText("去" + datas.get(2).name + "付款");
+                } else if (datas.get(3).isSelect) {
+                    payWay.setText("确认无误后去" + datas.get(3).name + "付款");
+                    paywaybtn.setText("去" + datas.get(3).name + "付款");
+                }
             }
         });
     }
@@ -152,6 +165,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
         }
     }
 
+    private void selectTab() {
+
+    }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
@@ -260,20 +276,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
                             "string", "modeofpayment_check")),
                     Toast.LENGTH_SHORT).show();
         }
-        if (datas.get(0).isSelect) {
-            payWay.setText("确认无误后去" + datas.get(0).name + "付款");
-            paywaybtn.setText("去" + datas.get(0).name + "付款");
-        } else if (datas.get(1).isSelect) {
-            payWay.setText("确认无误后去" + datas.get(1).name + "付款");
-            paywaybtn.setText("去" + datas.get(1).name + "付款");
+        if (datas.get(1).isSelect) {
             AlixPay alixPay = new AlixPay(PaymentInfoActivity.this, r);
             alixPay.pay();
-        } else if (datas.get(2).isSelect) {
-            payWay.setText("确认无误后去" + datas.get(2).name + "付款");
-            paywaybtn.setText("去" + datas.get(2).name + "付款");
-        } else if (datas.get(3).isSelect) {
-            payWay.setText("确认无误后去" + datas.get(3).name + "付款");
-            paywaybtn.setText("去" + datas.get(3).name + "付款");
         }
     }
 
@@ -323,7 +328,7 @@ public class PaymentInfoActivity extends FragmentActivity implements
                 Utils.dismiss(pd_pay);
                 if (result != null) {
                     String resultData[] = handlerResult(result);
-                     // Message&Status&ordernum&GameName&ServerName&Username
+                    // Message&Status&ordernum&GameName&ServerName&Username
 
                     if (resultData[1].equals("1")) {
                         String ordernum = resultData[2];
