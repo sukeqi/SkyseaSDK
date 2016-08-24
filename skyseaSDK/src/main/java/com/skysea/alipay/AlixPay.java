@@ -150,20 +150,16 @@ public class AlixPay {
 
     String getOrderInfo() {
         String strOrderInfo = "partner=" + "\"" + PartnerConfig.PARTNER + "\"";
-        strOrderInfo += "&";
         strOrderInfo += "seller=" + "\"" + PartnerConfig.SELLER + "\"";
-        strOrderInfo += "&";
+
         strOrderInfo += "out_trade_no=" + "\"" + orderInfo.getOrder_num()
                 + "\"";
-        strOrderInfo += "&";
+
         strOrderInfo += "subject=" + "\"" + orderInfo.getGamename()
                 + orderInfo.getGameservername() + "充值" + "\"";
-        strOrderInfo += "&";
         strOrderInfo += "body=" + "\"" + orderInfo.getGamename()
                 + orderInfo.getGameservername() + "充值" + "\"";
-        strOrderInfo += "&";
         strOrderInfo += "total_fee=" + "\"" + orderInfo.getAmount() + "\"";
-        strOrderInfo += "&";
         strOrderInfo += "notify_url=" + "\""
                 + Constant.NOTIFY_URL
                 + "\"";

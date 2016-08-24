@@ -44,11 +44,10 @@ import com.skysea.view.ViewHolder;
 public class PaymentInfoActivity extends FragmentActivity implements
         OnClickListener {
 
-    String userid;
-    String gameid;
-    String gameserverid;
+    int userid;
+    int gameid;
+    int gameserverid;
     String totlesMoney;
-
     String xb_orderid;
     static IDispatcherCallback callback;
 
@@ -155,9 +154,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
     private void getIntentArgs(Intent intent) {
         try {
-            userid = intent.getExtras().getString("userid");
-            gameid = intent.getExtras().getString("gameid");
-            gameserverid = intent.getExtras().getString("gameserverid");
+            userid = intent.getExtras().getInt("userid");
+            gameid = intent.getExtras().getInt("gameid");
+            gameserverid = intent.getExtras().getInt("gameserverid");
             xb_orderid = intent.getExtras().getString("xb_orderid");
 
         } catch (NullPointerException e) {
@@ -192,9 +191,9 @@ public class PaymentInfoActivity extends FragmentActivity implements
         for (int i = 0; i < tabs.length; i++) {
             Bundle data = new Bundle();
             data.putString("text", tabs[i]);
-            data.putString("userid", userid);
-            data.putString("gameid", gameid);
-            data.putString("gameserverid", gameserverid);
+            data.putString("userid", userid + "");
+            data.putString("gameid", gameid + "");
+            data.putString("gameserverid", gameserverid + "");
             data.putString("xb_orderid", xb_orderid);
             data.putString("totlesMoney", totalMoney.getText().toString());
             if (isFinishing()) {
@@ -260,11 +259,11 @@ public class PaymentInfoActivity extends FragmentActivity implements
 
     public void checkOrderInfo() {
         OrderInfo r = new OrderInfo();
-        r.setUserid(userid);
-        r.setGameid(gameid);
-        r.setGameserverid(gameserverid);
+        r.setUserid(userid + "");
+        r.setGameid(gameid + "");
+        r.setGameserverid(gameserverid + "");
         r.setXb_orderid(xb_orderid);
-        r.setPayment_mode(text);
+        r.setPayment_mode(2 + "");
 
         if (!totalMoneys.getText().equals("0")) {
             r.setAmount(totalMoneys.getText().toString());
@@ -335,15 +334,6 @@ public class PaymentInfoActivity extends FragmentActivity implements
                         String gamename = resultData[3];
                         String servername = resultData[4];
                         String username = resultData[5];
-
-                        Bundle bundle = new Bundle();
-                        bundle.putString("ordernum", ordernum);
-                        bundle.putString("gamename", gamename);
-                        bundle.putString("servername", servername);
-                        bundle.putString("username", username);
-                        bundle.putString("amount", totalMoneys.getText().toString());
-                        goToforResult(PaymentInfoActivity.this,
-                                OrderInfoActivity.class, bundle, 0);
                     }
                 }
             }

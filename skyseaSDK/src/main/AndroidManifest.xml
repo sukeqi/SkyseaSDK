@@ -27,27 +27,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.skysea.sdk.main.LoginActivity"></activity>
-        <activity android:name="com.skysea.sdk.main.RegisterActivity"></activity>
+        <activity android:name="com.skysea.sdk.main.LoginActivity" />
+        <activity android:name="com.skysea.sdk.main.RegisterActivity" />
         <activity
             android:name="com.skysea.sdk.main.AgreementActivity"
-            android:configChanges="orientation|keyboardHidden|navigation"></activity>
+            android:configChanges="orientation|keyboardHidden|navigation" />
         <activity
             android:name="com.skysea.sdk.main.PaymentInfoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
-        <activity android:name="com.skysea.sdk.main.OrderInfoActivity"></activity>
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+        <activity android:name="com.skysea.sdk.main.OrderInfoActivity" />
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind"/>
         <activity
             android:name="com.alipay.sdk.auth.AuthActivity"
             android:configChanges="orientation|keyboardHidden|navigation"
             android:exported="false"
-            android:screenOrientation="behind" >
-        </activity>
+            android:screenOrientation="behind"/>
     </application>
 
 </manifest>

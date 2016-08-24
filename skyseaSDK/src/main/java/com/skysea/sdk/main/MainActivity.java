@@ -43,7 +43,7 @@ public class MainActivity extends Activity implements OnClickListener{
 			break;
 
 		case R.id.button2:
-			Matrix.invokeToPayHandler(MainActivity.this, "594412", "", "","",new IDispatcherCallback() {
+			Matrix.invokeToPayHandler(MainActivity.this, 418723, 189, 1,"1235415214",new IDispatcherCallback() {
 				@Override
 				public void onFinish(String result) {
 					// TODO Auto-generated method stub
